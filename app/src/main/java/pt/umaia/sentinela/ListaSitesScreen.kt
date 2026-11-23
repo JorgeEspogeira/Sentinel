@@ -24,8 +24,11 @@ import androidx.compose.ui.unit.sp
 data class Site(
     val nome: String,
     val url: String,
-    val online: Boolean
+    val online: Boolean,
+    val tempoMs: Int = 0   // tempo de resposta em milissegundos
 )
+
+
 
 // Ecrã com a lista de sites
 @Composable
