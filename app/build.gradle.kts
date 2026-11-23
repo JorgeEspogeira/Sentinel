@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "pt.umaia.sentinela"
     compileSdk {
-        version = release(37)
+        version = release(37) {
+            minorApiLevel = 1   // 37.1: as bibliotecas novas do Compose pedem esta versão
+        }
     }
 
     defaultConfig {
