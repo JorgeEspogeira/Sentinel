@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 val sites = remember {
                     val lista = mutableStateListOf<Site>()
                     lista.addAll(lerSites(context))
-                    verificarTodos(lista)   // verifica os sites quando a app abre
+                    verificarSempre(lista)   // verifica ao abrir e repete de 30 em 30 segundos
                     lista
 
                 }
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                             onGuardar = { nome, url ->
                                 sites.add(Site(nome, url, false))
                                 guardarSites(context, sites)   // guarda a lista com o site novo
-                                verificarTodos(sites)   // verifica o site novo
+                                verificarTodos(sites)          // verifica logo o site novo
                                 ecra.value = "lista"
                             },
                             onCancelar = { ecra.value = "lista" }
