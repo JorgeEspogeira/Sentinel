@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,8 @@ data class Site(
 fun ListaSitesScreen(
     sites: List<Site>,           // sites a mostrar
     onAdicionar: () -> Unit,     // chamada ao carregar em "+ Adicionar"
-    onApagar: (Site) -> Unit     // chamada ao carregar em "Apagar", com o site escolhido
+    onApagar: (Site) -> Unit,    // chamada ao carregar em "Apagar", com o site escolhido
+    onSair: () -> Unit           // chamada ao carregar em "Sair"
 ) {
     Column(
         modifier = Modifier
@@ -42,12 +44,18 @@ fun ListaSitesScreen(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Sites", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-            Button(onClick = onAdicionar) {
-                Text("+ Adicionar")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = onSair) {
+                    Text("Sair")
+                }
+                Button(onClick = onAdicionar) {
+                    Text("+ Adicionar")
+                }
             }
         }
 

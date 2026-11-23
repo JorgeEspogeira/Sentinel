@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import pt.umaia.sentinela.ui.theme.SentinelaTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,6 +19,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SentinelaTheme {
+                val auth = remember { FirebaseAuth.getInstance() }
+                val usuarioAtual = remember { mutableStateOf<FirebaseUser?>(auth.currentUser) }
                 val ecra = remember { mutableStateOf("lista") }
 
                 // A lista começa com os sites que estavam guardados
@@ -26,24 +30,36 @@ class MainActivity : ComponentActivity() {
                     lista
                 }
 
-                if (ecra.value == "lista") {
-                    ListaSitesScreen(
-                        sites = sites,
-                        onAdicionar = { ecra.value = "adicionar" },
-                        onApagar = { site ->
-                            sites.remove(site)
-                            guardarSites(context, sites)   // guarda a lista sem o site apagado
+                if (usuarioAtual.value == null) {
+                    LoginScreen(
+                        onLoginSucesso = {
+                            usuarioAtual.value = auth.currentUser
                         }
                     )
                 } else {
-                    AdicionarSiteScreen(
-                        onGuardar = { nome, url ->
-                            sites.add(Site(nome, url, false))
-                            guardarSites(context, sites)   // guarda a lista com o site novo
-                            ecra.value = "lista"
-                        },
-                        onCancelar = { ecra.value = "lista" }
-                    )
+                    if (ecra.value == "lista") {
+                        ListaSitesScreen(
+                            sites = sites,
+                            onAdicionar = { ecra.value = "adicionar" },
+                            onApagar = { site ->
+                                sites.remove(site)
+                                guardarSites(context, sites)   // guarda a lista sem o site apagado
+                            },
+                            onSair = {
+                                auth.signOut()
+                                usuarioAtual.value = null
+                            }
+                        )
+                    } else {
+                        AdicionarSiteScreen(
+                            onGuardar = { nome, url ->
+                                sites.add(Site(nome, url, false))
+                                guardarSites(context, sites)   // guarda a lista com o site novo
+                                ecra.value = "lista"
+                            },
+                            onCancelar = { ecra.value = "lista" }
+                        )
+                    }
                 }
             }
         }
