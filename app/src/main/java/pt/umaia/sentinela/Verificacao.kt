@@ -23,17 +23,28 @@ fun verificarSite(urlOriginal: String): Boolean {
     }
 }
 
-// Verifica todos os sites da lista, um a um
+// Verifica todos os sites uma vez e mede o tempo que cada um demora a responder
+// (tem de ser chamada dentro de uma Thread)
+fun verificarLista(sites: MutableList<Site>) {
+    for (i in sites.indices) {
+        // se entretanto apagaste um site, a lista ficou mais pequena
+        if (i < sites.size) {
+            val inicio = System.currentTimeMillis()   // hora antes do pedido
+            val online = verificarSite(sites[i].url)
+            val tempo = (System.currentTimeMillis() - inicio).toInt()   // hora depois menos hora antes
+            if (i < sites.size) {
+                sites[i] = sites[i].copy(online = online, tempoMs = tempo)   // troca pela cópia com o estado novo
+            }
+        }
+    }
+}
+
+// Verifica todos os sites uma vez
 fun verificarTodos(sites: MutableList<Site>) {
     // Thread = tarefa em paralelo. O Android não deixa usar a internet
     // na tarefa principal (bloqueava o ecrã), por isso usamos outra.
     Thread {
-        for (i in sites.indices) {
-            if (i < sites.size) {   // evita erro se um site for apagado entretanto
-                val online = verificarSite(sites[i].url)
-                sites[i] = sites[i].copy(online = online)   // troca pela cópia com o estado novo
-            }
-        }
+        verificarLista(sites)
     }.start()
 }
 
@@ -42,15 +53,7 @@ fun verificarSempre(sites: MutableList<Site>) {
     Thread {
         // este ciclo nunca acaba: a app continua a verificar enquanto estiver aberta
         while (true) {
-            for (i in sites.indices) {
-                // se entretanto apagaste um site, a lista ficou mais pequena
-                if (i < sites.size) {
-                    val online = verificarSite(sites[i].url)
-                    if (i < sites.size) {
-                        sites[i] = sites[i].copy(online = online)
-                    }
-                }
-            }
+            verificarLista(sites)
             // espera 30 segundos (30000 milissegundos) antes de voltar a verificar
             Thread.sleep(30000)
         }
