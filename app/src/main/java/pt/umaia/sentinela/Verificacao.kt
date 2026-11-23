@@ -36,3 +36,23 @@ fun verificarTodos(sites: MutableList<Site>) {
         }
     }.start()
 }
+
+// Verifica todos os sites e repete de 30 em 30 segundos
+fun verificarSempre(sites: MutableList<Site>) {
+    Thread {
+        // este ciclo nunca acaba: a app continua a verificar enquanto estiver aberta
+        while (true) {
+            for (i in sites.indices) {
+                // se entretanto apagaste um site, a lista ficou mais pequena
+                if (i < sites.size) {
+                    val online = verificarSite(sites[i].url)
+                    if (i < sites.size) {
+                        sites[i] = sites[i].copy(online = online)
+                    }
+                }
+            }
+            // espera 30 segundos (30000 milissegundos) antes de voltar a verificar
+            Thread.sleep(30000)
+        }
+    }.start()
+}
