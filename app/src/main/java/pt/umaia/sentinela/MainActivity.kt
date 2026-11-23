@@ -27,7 +27,9 @@ class MainActivity : ComponentActivity() {
                 val sites = remember {
                     val lista = mutableStateListOf<Site>()
                     lista.addAll(lerSites(context))
+                    verificarTodos(lista)   // verifica os sites quando a app abre
                     lista
+
                 }
 
                 if (usuarioAtual.value == null) {
