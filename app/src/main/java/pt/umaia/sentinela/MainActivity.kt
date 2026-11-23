@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
                             onGuardar = { nome, url ->
                                 sites.add(Site(nome, url, false))
                                 guardarSites(context, sites)   // guarda a lista com o site novo
+                                verificarTodos(sites)   // verifica o site novo
                                 ecra.value = "lista"
                             },
                             onCancelar = { ecra.value = "lista" }
