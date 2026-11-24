@@ -1,5 +1,5 @@
 package pt.umaia.sentinela
-
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -93,7 +93,10 @@ fun SiteItem(site: Site, onApagar: (Site) -> Unit, onAbrir: (Site) -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(site.url)
-                Text(if (site.online) "Online" else "Offline")
+                Text(
+                    text = if (site.online) "Online" else "Offline",
+                    color = if (site.online) Color(0xFF2E7D32) else Color(0xFFC62828)   // verde ou vermelho
+                )
             }
 
             // Botão com o ícone do caixote do lixo
