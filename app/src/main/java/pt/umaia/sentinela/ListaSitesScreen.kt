@@ -25,7 +25,8 @@ data class Site(
     val nome: String,
     val url: String,
     val online: Boolean,
-    val tempoMs: Int = 0   // tempo de resposta em milissegundos
+    val tempoMs: Int = 0,   // tempo de resposta em milissegundos
+    val historico: List<Int> = emptyList()     // tempos das últimas medições (0 = estava offline)
 )
 
 
