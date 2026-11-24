@@ -82,7 +82,7 @@ fun SiteItem(site: Site, onApagar: (Site) -> Unit, onAbrir: (Site) -> Unit) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text(site.url)
-            Text(if (site.online) "Online (${site.tempoMs} ms)" else "Offline")
+            Text(if (site.online) "Online" else "Offline")
 
             // Botão simples (sem fundo) que avisa qual o site a apagar
             TextButton(onClick = { onApagar(site) }) {
