@@ -20,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 // Dados de um site
 data class Site(
     val nome: String,
@@ -79,14 +82,23 @@ fun SiteItem(site: Site, onApagar: (Site) -> Unit, onAbrir: (Site) -> Unit) {
             .fillMaxWidth()
             .clickable { onAbrir(site) }   // carregar no cartão abre o detalhe
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(site.url)
-            Text(if (site.online) "Online" else "Offline")
+        // Row: os textos ficam à esquerda e o caixote do lixo à direita, em baixo
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            // weight(1f) = os textos ocupam o espaço que sobra
+            Column(modifier = Modifier.weight(1f)) {
+                Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(site.url)
+                Text(if (site.online) "Online" else "Offline")
+            }
 
-            // Botão simples (sem fundo) que avisa qual o site a apagar
-            TextButton(onClick = { onApagar(site) }) {
-                Text("Apagar")
+            // Botão com o ícone do caixote do lixo
+            IconButton(onClick = { onApagar(site) }) {
+                Icon(Icons.Default.Delete, contentDescription = "Apagar")
             }
         }
     }
