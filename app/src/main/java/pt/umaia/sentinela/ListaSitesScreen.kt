@@ -1,5 +1,6 @@
 package pt.umaia.sentinela
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,11 +26,9 @@ data class Site(
     val nome: String,
     val url: String,
     val online: Boolean,
-    val tempoMs: Int = 0,   // tempo de resposta em milissegundos
+    val tempoMs: Int = 0,                      // tempo de resposta em milissegundos
     val historico: List<Int> = emptyList()     // tempos das últimas medições (0 = estava offline)
 )
-
-
 
 // Ecrã com a lista de sites
 @Composable
@@ -37,6 +36,7 @@ fun ListaSitesScreen(
     sites: List<Site>,           // sites a mostrar
     onAdicionar: () -> Unit,     // chamada ao carregar em "+ Adicionar"
     onApagar: (Site) -> Unit,    // chamada ao carregar em "Apagar", com o site escolhido
+    onAbrir: (Site) -> Unit,     // chamada ao carregar num site, para ver o detalhe
     onSair: () -> Unit           // chamada ao carregar em "Sair"
 ) {
     Column(
@@ -65,7 +65,7 @@ fun ListaSitesScreen(
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(sites) { site ->
-                SiteItem(site, onApagar)
+                SiteItem(site, onApagar, onAbrir)
             }
         }
     }
@@ -73,13 +73,16 @@ fun ListaSitesScreen(
 
 // Cartão de um site
 @Composable
-fun SiteItem(site: Site, onApagar: (Site) -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+fun SiteItem(site: Site, onApagar: (Site) -> Unit, onAbrir: (Site) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onAbrir(site) }   // carregar no cartão abre o detalhe
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text(site.url)
             Text(if (site.online) "Online (${site.tempoMs} ms)" else "Offline")
-            Text("Medições: ${site.historico.size}")   // só para testar o histórico
 
             // Botão simples (sem fundo) que avisa qual o site a apagar
             TextButton(onClick = { onApagar(site) }) {
