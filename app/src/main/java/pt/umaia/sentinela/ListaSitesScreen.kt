@@ -79,6 +79,7 @@ fun SiteItem(site: Site, onApagar: (Site) -> Unit) {
             Text(site.nome, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text(site.url)
             Text(if (site.online) "Online (${site.tempoMs} ms)" else "Offline")
+            Text("Medições: ${site.historico.size}")   // só para testar o histórico
 
             // Botão simples (sem fundo) que avisa qual o site a apagar
             TextButton(onClick = { onApagar(site) }) {
