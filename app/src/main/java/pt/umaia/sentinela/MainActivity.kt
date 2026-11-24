@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
                 val auth = remember { FirebaseAuth.getInstance() }
                 val usuarioAtual = remember { mutableStateOf<FirebaseUser?>(auth.currentUser) }
                 val ecra = remember { mutableStateOf("lista") }
+                val siteAberto = remember { mutableStateOf(0) }   // posição do site que está aberto no detalhe
 
                 // A lista começa com os sites que estavam guardados
                 val sites = remember {
@@ -29,7 +30,6 @@ class MainActivity : ComponentActivity() {
                     lista.addAll(lerSites(context))
                     verificarSempre(lista)   // verifica ao abrir e repete de 30 em 30 segundos
                     lista
-
                 }
 
                 if (usuarioAtual.value == null) {
@@ -47,10 +47,19 @@ class MainActivity : ComponentActivity() {
                                 sites.remove(site)
                                 guardarSites(context, sites)   // guarda a lista sem o site apagado
                             },
+                            onAbrir = { site ->
+                                siteAberto.value = sites.indexOf(site)   // guarda qual foi escolhido
+                                ecra.value = "detalhe"
+                            },
                             onSair = {
                                 auth.signOut()
                                 usuarioAtual.value = null
                             }
+                        )
+                    } else if (ecra.value == "detalhe") {
+                        DetalheSiteScreen(
+                            site = sites[siteAberto.value],
+                            onVoltar = { ecra.value = "lista" }
                         )
                     } else {
                         AdicionarSiteScreen(
