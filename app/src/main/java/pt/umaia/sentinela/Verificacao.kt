@@ -33,7 +33,11 @@ fun verificarLista(sites: MutableList<Site>) {
             val online = verificarSite(sites[i].url)
             val tempo = (System.currentTimeMillis() - inicio).toInt()   // hora depois menos hora antes
             if (i < sites.size) {
-                sites[i] = sites[i].copy(online = online, tempoMs = tempo)   // troca pela cópia com o estado novo
+                // se estiver offline guardamos 0, se estiver online guardamos o tempo
+                val tempoGuardar = if (online) tempo else 0
+                // junta a medição nova ao histórico e fica só com as últimas 20
+                val novoHistorico = (sites[i].historico + tempoGuardar).takeLast(20)
+                sites[i] = sites[i].copy(online = online, tempoMs = tempo, historico = novoHistorico)
             }
         }
     }
